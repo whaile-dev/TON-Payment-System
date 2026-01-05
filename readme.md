@@ -173,20 +173,22 @@
 
 ## Demo и контакты
 
-### 🚀 Запущенный demo
-
-Демонстрационная версия платежной системы доступна по адресу:
-
-* **[https://pay.whaile.ru](https://pay.whaile.ru)**
-
-![Demo QR](./assets/demo_qr.png)
-
-### 👨‍💻 Разработчик
-
-* **Telegram:** @whaile_dev
-* **Website:** [https://whaile.ru](https://whaile.ru)
-
-![Developer QR](./assets/dev_qr.png)
+<div align="center">
+  <table>
+    <tr>
+      <td align="center">
+        <img src="./assets/dev_qr.png" width="150" alt="Developer"><br>
+        Разработчик<br>
+        @whaile_dev / whaile.ru
+      </td>
+      <td align="center">
+        <img src="./assets/demo_qr.png" width="150" alt="Demo"><br>
+        Demo<br>
+        https://pay.whaile.ru/
+      </td>
+    </tr>
+  </table>
+</div>
 
 ---
 
