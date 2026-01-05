@@ -710,17 +710,10 @@ async def get_pytonlib_client():
     return client
 
 async def get_seqno(client, address: str):
-    """
-    Получает seqno (sequence number) для адреса кошелька.
-    """
     data = await client.raw_run_method(method='seqno', stack_data=[], address=address)
     return int(data['stack'][0][1], 16)
 
 async def perform_jetton_transfer(to: str, amount: float, jetton_address: str, api_key: str, seed_phrase: str):
-    """
-    Выполняет перевод жетона на указанный адрес используя актуальный пример из tonutils.
-    Возвращает hash транзакции или None в случае ошибки.
-    """
     try:
         from pytoniq_core import Address, begin_cell
         from tonutils.client import ToncenterV3Client
@@ -758,7 +751,7 @@ async def perform_jetton_transfer(to: str, amount: float, jetton_address: str, a
         
         tx_hash = await wallet.transfer(
             destination=jetton_wallet_address,
-            amount=0.05,  # Минимальная сумма TON для отправки сообщения
+            amount=0.05,
             body=body,
         )
         
@@ -849,13 +842,8 @@ async def withdraw_from_cashier(req: WithdrawRequest, request: Request = None):
                     )
             finally:
                 conn_check.close()
-        
-        # Выполняем перевод
+
         if currency == 'TON':
-            # Переводим сумму за вычетом комиссии
-            # С кассы списывается req.amount, но переводится req.amount - fee_amount
-            # Комиссия блокчейна вычитается автоматически из перевода
-            # Пользователь получит actual_withdraw_amount = req.amount - fee_amount
             tx_hash = await perform_ton_transfer(req.wallet, actual_withdraw_amount, toncenter_api_key, seed_phrase)
         elif currency == 'JETTON':
             jetton_address = cashier.get('jetton_address')
@@ -868,13 +856,11 @@ async def withdraw_from_cashier(req: WithdrawRequest, request: Request = None):
         if not tx_hash:
             logger.error(f"Перевод не выполнен, tx_hash пустой")
             raise HTTPException(status_code=500, detail="Transfer failed")
-        
-        # Генерируем request_id для отслеживания транзакции
+
         import hashlib
         import time
         request_id = hashlib.sha256(f"{req.cashier_id}{req.amount}{req.wallet}{time.time()}".encode()).hexdigest()
-        
-        # Списываем баланс с кассы
+
         conn = create_connection()
         if not conn:
             raise HTTPException(status_code=500, detail="Database connection error")
@@ -883,9 +869,6 @@ async def withdraw_from_cashier(req: WithdrawRequest, request: Request = None):
             cursor = conn.cursor()
             
             if currency == 'TON':
-                # Списываем ровно запрошенную сумму с кассы
-                # Комиссию платит пользователь (вычитается из перевода блокчейном)
-                # ВАЖНО: Проверяем, что валюта кассы TON перед списанием
                 cursor.execute("""
                     UPDATE Cashiers 
                     SET balance = balance - %s 
@@ -895,17 +878,13 @@ async def withdraw_from_cashier(req: WithdrawRequest, request: Request = None):
                 if cursor.rowcount == 0:
                     conn.rollback()
                     raise HTTPException(status_code=400, detail="Failed to deduct balance (concurrent modification)")
-                
-                # Сохраняем транзакцию с запрошенной суммой
-                # Фактически пользователь получит req.amount - fee_amount (комиссия вычитается блокчейном)
+
                 cursor.execute("""
                     INSERT INTO TONWithdraw 
                     (user_id, cashier_id, wallet, request_id, hash, price, status)
                     VALUES (%s, %s, %s, %s, %s, %s, 'pending')
                 """, (user_id, req.cashier_id, req.wallet, request_id, tx_hash, req.amount))
             elif currency == 'JETTON':
-                # Списываем JETTON с текущей кассы
-                # ВАЖНО: Проверяем, что валюта кассы JETTON перед списанием
                 cursor.execute("""
                     UPDATE Cashiers 
                     SET balance = balance - %s 
@@ -916,7 +895,6 @@ async def withdraw_from_cashier(req: WithdrawRequest, request: Request = None):
                     conn.rollback()
                     raise HTTPException(status_code=400, detail="Failed to deduct balance (concurrent modification)")
                 
-                # Списываем комиссию блокчейна с TON кассы
                 cursor.execute("""
                     SELECT id, balance FROM Cashiers 
                     WHERE user_id = %s AND currency = 'TON' AND status = 'active'
@@ -936,8 +914,7 @@ async def withdraw_from_cashier(req: WithdrawRequest, request: Request = None):
                     if cursor.rowcount == 0:
                         conn.rollback()
                         raise HTTPException(status_code=400, detail="Failed to deduct TON fee (concurrent modification)")
-                
-                # Сохраняем транзакцию JETTON
+
                 jetton_address = cashier.get('jetton_address')
                 cursor.execute("""
                     INSERT INTO JETTONWithdraw 
@@ -947,8 +924,7 @@ async def withdraw_from_cashier(req: WithdrawRequest, request: Request = None):
             
             conn.commit()
             logger.success(f"Withdrawn {req.amount} {currency} from cashier {req.cashier_id}, tx_hash: {tx_hash}")
-            
-            # Проверяем транзакцию на блокчейне (асинхронно, не блокируем ответ)
+
             asyncio.create_task(verify_withdrawal_transaction(tx_hash, req.amount, req.wallet, currency, request_id))
             
             response_data = {
@@ -959,12 +935,11 @@ async def withdraw_from_cashier(req: WithdrawRequest, request: Request = None):
                 "currency": currency,
                 "request_id": request_id
             }
-            
-            # Добавляем информацию о комиссии
+
             if currency == 'TON':
-                response_data["blockchain_fee"] = round(fee_amount, 3)  # Округляем для ответа
+                response_data["blockchain_fee"] = round(fee_amount, 3)
                 response_data["requested_amount"] = round(req.amount, DECIMAL_PLACES)
-                response_data["actual_amount"] = round(actual_withdraw_amount, 3)  # Округляем для ответа
+                response_data["actual_amount"] = round(actual_withdraw_amount, 3)
                 response_data["message"] = f"Withdrawal successful. Requested: {req.amount:.2f} TON, blockchain fee: ~{round(fee_amount, 3):.3f} TON, you will receive: ~{round(actual_withdraw_amount, 3):.3f} TON"
             elif currency == 'JETTON':
                 response_data["blockchain_fee"] = round(fee_amount, DECIMAL_PLACES)
@@ -996,19 +971,15 @@ async def withdraw_starter(shutdown_event=None):
     ssl_keyfile = "/etc/letsencrypt/live/pay.whaile.ru/privkey.pem"
     ssl_certfile = "/etc/letsencrypt/live/pay.whaile.ru/fullchain.pem"
     
-    # Проверяем наличие SSL сертификатов
     use_ssl = os.path.exists(ssl_keyfile) and os.path.exists(ssl_certfile)
-    
-    # Настраиваем логирование для подавления CancelledError
+
     logging.getLogger("uvicorn.lifespan").setLevel(logging.CRITICAL)
     logging.getLogger("starlette.routing").setLevel(logging.CRITICAL)
     logging.getLogger("uvicorn.error").setLevel(logging.CRITICAL)
-    
-    # Перехватываем stderr для фильтрации только CancelledError traceback
+
     original_excepthook = sys.excepthook
     
     def filtered_excepthook(exc_type, exc_value, exc_traceback):
-        # Пропускаем CancelledError
         if exc_type is asyncio.CancelledError:
             return
         original_excepthook(exc_type, exc_value, exc_traceback)

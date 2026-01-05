@@ -50,8 +50,23 @@ $support_url = $config['support']['telegram_url'] ?? 'https://t.me/whaile_dev';
                 <h6>Контакты</h6>
                 <div class="footer-contacts">
                     <div class="social-links">
-                        <a href="<?php echo htmlspecialchars($support_url); ?>" target="_blank" style="display: flex; align-items: center; justify-content: center" class="social-link bi bi-telegram" title="Telegram поддержка"></a>
-                        <a href="https://whaile.ru/" target="_blank" style="display: flex; align-items: center; justify-content: center" class="social-link bi bi-globe" title="Сайт разработчика"></a>
+                        <a href="<?php echo htmlspecialchars($support_url); ?>" 
+                        target="_blank"
+                        style="display: flex; align-items: center; justify-content: center"
+                        class="social-link bi bi-telegram"
+                        title="Telegram поддержка"></a>
+
+                        <a href="https://whaile.ru/" 
+                        target="_blank"
+                        style="display: flex; align-items: center; justify-content: center"
+                        class="social-link bi bi-globe"
+                        title="Сайт разработчика"></a>
+
+                        <a href="https://github.com/whaile-dev/TON-Payment-System"
+                        target="_blank"
+                        style="display: flex; align-items: center; justify-content: center"
+                        class="social-link bi bi-github"
+                        title="GitHub репозиторий"></a>
                     </div>
                 </div>
             </div>
