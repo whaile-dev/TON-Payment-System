@@ -173,18 +173,6 @@
 
 ## Demo и контакты
 
-### Видео демонстрация
-
-<div align="center">
-  <video width="800" controls>
-    <source src="./demo.mp4" type="video/mp4">
-    Ваш браузер не поддерживает видео тег.
-  </video>
-  <p><em>Демонстрация работы системы</em></p>
-</div>
-
-### Контакты
-
 <div align="center">
   <table>
     <tr>
