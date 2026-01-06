@@ -12,8 +12,8 @@ $support_url = $config['support']['telegram_url'] ?? 'https://t.me/whaile_dev';
             <div class="col-lg-4">
                 <div class="footer-brand">
                     <div class="brand-logo">
-                        <img src="scripts/img/logo.svg" alt="TON Pay" class="brand-logo-img me-2" style="height: 32px; width: 32px;">
-                        <span class="ton-glow">TON</span>Pay
+                        <img src="scripts/img/logo.svg" alt="<?php echo htmlspecialchars($config['site']['name'] ?? 'TonPay'); ?>" class="brand-logo-img me-2" style="height: 32px; width: 32px;">
+                        <span class="ton-glow"><?php echo htmlspecialchars($config['site']['name'] ?? 'TonPay'); ?></span>
                     </div>
                     <p>Глобальная платежная система нового поколения</p>
                 </div>
@@ -75,7 +75,7 @@ $support_url = $config['support']['telegram_url'] ?? 'https://t.me/whaile_dev';
         <div class="footer-bottom">
             <div class="row">
                 <div class="col-md-6">
-                    <p>&copy; <span id="currentYear"></span> TON Pay. Все права защищены.</p>
+                    <p>&copy; <span id="currentYear"></span> <?php echo htmlspecialchars($config['site']['name'] ?? 'TonPay'); ?>. Все права защищены.</p>
                 </div>
                 <div class="col-md-6 text-end">
                     <div class="footer-links">

@@ -1,5 +1,7 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/core/core.php');
+$config = getConfig();
+$site_name = $config['site']['name'] ?? 'TonPay';
 ?>
 
 <!DOCTYPE html>
@@ -7,7 +9,7 @@ require_once($_SERVER['DOCUMENT_ROOT'] . '/core/core.php');
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TON Pay | Глобальная платежная система для Telegram</title>
+    <title><?php echo htmlspecialchars($site_name); ?> | Глобальная платежная система для Telegram</title>
     <link rel="icon" type="image/svg+xml" href="scripts/img/logo.svg">
     <link rel="apple-touch-icon" href="scripts/img/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">

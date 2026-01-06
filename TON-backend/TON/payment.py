@@ -51,7 +51,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 origins = [
-    "https://pay.whaile.ru",
+    SITE_URL,
     "http://localhost",
     "http://127.0.0.1"
 ]
@@ -624,6 +624,8 @@ async def payment_starter(shutdown_event=None):
     logging.getLogger("uvicorn.lifespan").setLevel(logging.CRITICAL)
     logging.getLogger("starlette.routing").setLevel(logging.CRITICAL)
     logging.getLogger("uvicorn.error").setLevel(logging.CRITICAL)
+    logging.getLogger("uvicorn.access").setLevel(logging.CRITICAL)
+    logging.getLogger("uvicorn").setLevel(logging.CRITICAL)
     
     original_stderr = sys.stderr
     original_excepthook = sys.excepthook
@@ -641,7 +643,8 @@ async def payment_starter(shutdown_event=None):
         port=3000,
         ssl_keyfile=ssl_keyfile,
         ssl_certfile=ssl_certfile,
-        log_level='warning',
+        log_level='error',
+        log_config=None,
         access_log=False
     )
     server = uvicorn.Server(config)

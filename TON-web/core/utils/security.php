@@ -41,7 +41,12 @@ function setSecurityHeaders(): void {
             header('Strict-Transport-Security: max-age=31536000; includeSubDomains');
         }
         
-        $csp = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' https://pay.whaile.ru https://pay.whaile.ru:3000 https://tonapi.io https://testnet.toncenter.com; frame-ancestors 'none';";
+        require_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+        $config = getConfig();
+        $site_url = $config['site']['url'] ?? 'https://pay.whaile.ru';
+        $api_port = $config['site']['api_port'] ?? 3000;
+        $api_base = $site_url . ':' . $api_port;
+        $csp = "default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com; style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; connect-src 'self' $site_url $api_base https://tonapi.io https://testnet.toncenter.com; frame-ancestors 'none';";
         header("Content-Security-Policy: $csp");
     }
 }

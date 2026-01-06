@@ -15,7 +15,7 @@ import logging
 import sys
 from typing import Optional
 
-from config import api_key, toncenter_api_key, seed_phrase, DECIMAL_PLACES, API_BASE
+from config import api_key, toncenter_api_key, seed_phrase, DECIMAL_PLACES, API_BASE, SITE_URL
 from TON.database import create_connection, get_cashier_by_id, validate_decimal_places
 
 _rate_limit_storage = defaultdict(list)
@@ -51,8 +51,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(lifespan=lifespan)
 
 origins = [
-    "https://pay.whaile.ru",
-    "https://whaile.ru",
+    SITE_URL,
     "http://localhost",
     "http://127.0.0.1"
 ]
@@ -976,6 +975,8 @@ async def withdraw_starter(shutdown_event=None):
     logging.getLogger("uvicorn.lifespan").setLevel(logging.CRITICAL)
     logging.getLogger("starlette.routing").setLevel(logging.CRITICAL)
     logging.getLogger("uvicorn.error").setLevel(logging.CRITICAL)
+    logging.getLogger("uvicorn.access").setLevel(logging.CRITICAL)
+    logging.getLogger("uvicorn").setLevel(logging.CRITICAL)
 
     original_excepthook = sys.excepthook
     
@@ -990,7 +991,7 @@ async def withdraw_starter(shutdown_event=None):
         "app": app,
         "host": "0.0.0.0",
         "port": 2998,
-        "log_level": "warning",
+        "log_level": "error",
         "log_config": None,
         "access_log": False
     }

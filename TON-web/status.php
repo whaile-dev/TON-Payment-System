@@ -248,7 +248,12 @@ function checkDatabaseStatus() {
 }
 
 function checkPythonAPI() {
-    $api_url = 'https://pay.whaile.ru:3000/health';
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+    $config = getConfig();
+    $site_url = $config['site']['url'] ?? 'https://pay.whaile.ru';
+    $api_port = $config['site']['api_port'] ?? 3000;
+    $api_base = $site_url . ':' . $api_port;
+    $api_url = $api_base . '/health';
     $start = microtime(true);
     
     $ch = curl_init();
@@ -463,7 +468,15 @@ $overall_status = getOverallSystemStatus($api_status, $db_status, $cpu_usage, $m
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Статус системы | TON Pay</title>
+    <?php
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+    $config = getConfig();
+    $site_name = $config['site']['name'] ?? 'TonPay';
+    $site_url = $config['site']['url'] ?? 'https://pay.whaile.ru';
+    $api_port = $config['site']['api_port'] ?? 3000;
+    $api_base = $site_url . ':' . $api_port;
+    ?>
+    <title>Статус системы | <?php echo htmlspecialchars($site_name); ?></title>
     <link rel="icon" type="image/svg+xml" href="scripts/img/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="scripts/libs/font-awesome/css/all.min.css">
@@ -993,7 +1006,7 @@ require_once('core/blocks/navbar.php');
 <section class="status-section">
     <div class="container">
         <div class="status-header">
-            <h1>Статус системы TON Pay</h1>
+            <h1>Статус системы <?php echo htmlspecialchars($site_name); ?></h1>
             <p class="text-ton-secondary">Мониторинг работы всех компонентов платежной системы</p>
         </div>
 

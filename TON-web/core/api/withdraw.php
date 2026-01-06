@@ -171,7 +171,12 @@ if (!$api_token) {
         exit();
     }
     
-    $withdrawClient = getHttpClient('https://pay.whaile.ru:2998');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+    $config = getConfig();
+    $site_url = $config['site']['url'] ?? 'https://pay.whaile.ru';
+    $withdraw_port = $config['site']['withdraw_port'] ?? 2998;
+    $withdraw_api = $site_url . ':' . $withdraw_port;
+    $withdrawClient = getHttpClient($withdraw_api);
     
     $payload = [
         'cashier_id' => $cashier_id,

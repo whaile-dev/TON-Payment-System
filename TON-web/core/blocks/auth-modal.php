@@ -1,4 +1,3 @@
-<!-- Модальное окно авторизации -->
 <div class="modal fade" id="authModal" tabindex="-1" style="overflow-y: hidden">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content glass-modal">

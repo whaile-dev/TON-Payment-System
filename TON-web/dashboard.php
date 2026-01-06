@@ -146,7 +146,12 @@ if ($prev_month_income > 0) {
     $csrf_token = generateCSRFToken();
     ?>
     <meta name="csrf-token" content="<?php echo htmlspecialchars($csrf_token); ?>">
-    <title>Кабинет | TON Pay</title>
+    <?php
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+    $config = getConfig();
+    $site_name = $config['site']['name'] ?? 'TonPay';
+    ?>
+    <title>Кабинет | <?php echo htmlspecialchars($site_name); ?></title>
     <link rel="apple-touch-icon" href="scripts/img/logo.svg">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="scripts/libs/font-awesome/css/all.min.css">
@@ -1117,7 +1122,7 @@ require_once('core/blocks/navbar.php');
         <div class="empty-state" id="emptyState" style="display: none;">
             <div class="empty-icon">💸</div>
             <h3 class="empty-title">У вас пока нет касс</h3>
-            <p class="empty-description">Создайте свою первую платежную кассу, чтобы начать принимать платежи через TON Pay</p>
+            <p class="empty-description">Создайте свою первую платежную кассу, чтобы начать принимать платежи через <?php echo htmlspecialchars($site_name); ?></p>
             <button class="btn btn-ton-primary" style="margin: auto;" data-bs-toggle="modal" data-bs-target="#createCashierModal">
                 Создать первую кассу
             </button>
@@ -2005,7 +2010,7 @@ require_once('core/blocks/navbar.php');
         this.textContent = 'Обработка...';
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
-е
+        
         showNotification('Запрос на вывод средств отправлен. Обработка...', 'info');
         
         fetch('/core/api/withdraw.php', {

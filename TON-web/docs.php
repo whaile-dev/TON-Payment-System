@@ -1,3 +1,13 @@
+<?php
+require_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+$config = getConfig();
+$site_name = $config['site']['name'] ?? 'TonPay';
+$site_url = $config['site']['url'] ?? '<?php echo htmlspecialchars($site_url); ?>';
+$api_port = $config['site']['api_port'] ?? 3000;
+$withdraw_port = $config['site']['withdraw_port'] ?? 2998;
+$api_base = $site_url . ':' . $api_port;
+$withdraw_api = $site_url . ':' . $withdraw_port;
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -5,9 +15,9 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1.0, shrink-to-fit=no">
 <link href="scripts/assets/images/favicon.png" rel="icon" />
-<title>API Документация | TON Pay</title>
-<meta name="description" content="Документация API для интеграции платежной системы TON Pay">
-<meta name="author" content="TON Pay">
+<title>API Документация | <?php echo htmlspecialchars($site_name); ?></title>
+<meta name="description" content="Документация API для интеграции платежной системы <?php echo htmlspecialchars($site_name); ?>">
+<meta name="author" content="<?php echo htmlspecialchars($site_name); ?>">
 
 <!-- Stylesheet
 ============================== -->
@@ -56,7 +66,7 @@ try {
 		<button id="sidebarCollapse" class="navbar-toggler d-block d-md-none" type="button"><span></span><span class="w-75"></span><span class="w-50"></span></button>
 		
 		<!-- Logo --> 
-        <a class="logo ml-md-3" href="/" title="iDocs Template" style="text-decoration: none !important; font-size: 1.5rem; font-weight: 700">TONpay</a>
+        <a class="logo ml-md-3" href="/" title="iDocs Template" style="text-decoration: none !important; font-size: 1.5rem; font-weight: 700"><?php echo htmlspecialchars($site_name); ?></a>
         <!-- Logo End -->
 
         <button id="theme-toggle" class="btn btn-sm btn-outline-secondary ml-3" style="margin-right: 1rem;"><i class="fas fa-moon"></i></button>
@@ -129,20 +139,20 @@ try {
         <!-- Getting Started
 		============================ -->
         <section id="idocs_start">
-        <h1>Документация TON Pay API</h1>
+        <h1>Документация <?php echo htmlspecialchars($site_name); ?> API</h1>
         <h2>Полное руководство по интеграции</h2>
-        <p class="lead">TON Pay - это платежная система для приема платежей в TON и Jetton токенах. Данная документация поможет вам интегрировать TON Pay в ваше приложение.</p>
+        <p class="lead"><?php echo htmlspecialchars($site_name); ?> - это платежная система для приема платежей в TON и Jetton токенах. Данная документация поможет вам интегрировать <?php echo htmlspecialchars($site_name); ?> в ваше приложение.</p>
 		<hr>
 		<div class="row">
 			<div class="col-sm-6 col-lg-4">
 				<ul class="list-unstyled">
 					<li><strong>Версия API:</strong> 1.0</li>
-					<li><strong>Базовый URL:</strong> <code>https://pay.whaile.ru:3000</code></li>
+					<li><strong>Базовый URL:</strong> <code><?php echo htmlspecialchars($api_base); ?></code></li>
 				</ul>
 			</div>
 			<div class="col-sm-6 col-lg-4">
 				<ul class="list-unstyled">
-					<li><strong class="font-weight-700">Withdraw API:</strong> <code>https://pay.whaile.ru:2998</code></li>
+					<li><strong class="font-weight-700">Withdraw API:</strong> <code><?php echo htmlspecialchars($withdraw_api); ?></code></li>
 					<li><strong>Формат данных:</strong> JSON</li>
 				</ul>
 			</div>
@@ -156,7 +166,7 @@ try {
 		============================ -->
         <section id="idocs_introduction">
           <h2>Введение</h2>
-          <p class="lead">TON Pay предоставляет простой и безопасный способ приема платежей в TON и Jetton токенах.</p>
+          <p class="lead"><?php echo htmlspecialchars($site_name); ?> предоставляет простой и безопасный способ приема платежей в TON и Jetton токенах.</p>
           
           <div class="text-center mb-4">
             <img src="./scripts/img/All.svg" alt="Общая архитектура системы" class="img-fluid">
@@ -210,7 +220,7 @@ try {
 </code></pre>
           
           <h4>В query параметрах (GET):</h4>
-          <pre><code class="bash">https://pay.whaile.ru:3000/cashier/1?user_id=1&api_token=ваш_api_токен</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($api_base); ?>/cashier/1?user_id=1&api_token=ваш_api_токен</code></pre>
           
           <p class="alert alert-warning"><span class="badge badge-danger text-uppercase mr-2">Важно</span>Никогда не публикуйте ваш API токен в открытом доступе. Храните его в безопасном месте.</p>
         </section>
@@ -234,12 +244,12 @@ try {
             <tbody>
               <tr>
                 <td>Payment API</td>
-                <td><code>https://pay.whaile.ru:3000</code></td>
+                <td><code><?php echo htmlspecialchars($api_base); ?></code></td>
                 <td>Создание платежей, управление кассами</td>
               </tr>
               <tr>
                 <td>Withdraw API</td>
-                <td><code>https://pay.whaile.ru:2998</code></td>
+                <td><code><?php echo htmlspecialchars($withdraw_api); ?></code></td>
                 <td>Вывод средств с касс</td>
               </tr>
             </tbody>
@@ -302,7 +312,7 @@ try {
           <p>Создает новый платеж в системе. После создания платежа пользователь должен отправить указанную сумму на указанный адрес кошелька. Система автоматически отслеживает транзакцию в блокчейне и отправляет webhook уведомление при подтверждении.</p>
           
           <h3>URL</h3>
-          <pre><code class="bash">https://pay.whaile.ru:3000/create_payment</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($api_base); ?>/create_payment</code></pre>
           
           <h3>Метод</h3>
           <p><code>POST</code></p>
@@ -379,7 +389,7 @@ try {
           <pre><code class="python">import requests
 
 response = requests.post(
-    'https://pay.whaile.ru:3000/create_payment',
+    '<?php echo htmlspecialchars($api_base); ?>/create_payment',
     json={
         'cashier_id': 1,
         'amount': 0.01,
@@ -513,7 +523,7 @@ print(data)
           <p>Позволяет получить информацию о платеже по его UUID. Полезно для восстановления платежа или проверки его статуса.</p>
           
           <h3>URL</h3>
-          <pre><code class="bash">https://pay.whaile.ru:3000/payment_by_uuid/{transaction_uuid}</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($api_base); ?>/payment_by_uuid/{transaction_uuid}</code></pre>
           
           <h3>Метод</h3>
           <p><code>GET</code></p>
@@ -541,7 +551,7 @@ print(data)
 
 uuid = "550e8400-e29b-41d4-a716-446655440000"
 response = requests.get(
-    f'https://pay.whaile.ru:3000/payment_by_uuid/{uuid}'
+    f'<?php echo htmlspecialchars($api_base); ?>/payment_by_uuid/{uuid}'
 )
 
 data = response.json()
@@ -604,7 +614,7 @@ print(data)
           <p>Возвращает текущий статус платежа по его ID и валюте.</p>
           
           <h3>URL</h3>
-          <pre><code class="bash">https://pay.whaile.ru:3000/payment_status/{currency}/{payment_id}</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($api_base); ?>/payment_status/{currency}/{payment_id}</code></pre>
           
           <h3>Метод</h3>
           <p><code>GET</code></p>
@@ -636,7 +646,7 @@ print(data)
           <pre><code class="python">import requests
 
 response = requests.get(
-    'https://pay.whaile.ru:3000/payment_status/ton/123'
+    '<?php echo htmlspecialchars($api_base); ?>/payment_status/ton/123'
 )
 
 data = response.json()
@@ -677,7 +687,7 @@ print(data)
           <p>Создает новую платежную кассу. Касса используется для приема платежей. У каждой кассы есть свой баланс, настройки минимальной/максимальной суммы и webhook URL для уведомлений.</p>
           
           <h3>URL</h3>
-          <pre><code class="bash">https://pay.whaile.ru:3000/create_cashier</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($api_base); ?>/create_cashier</code></pre>
           
           <h3>Метод</h3>
           <p><code>POST</code></p>
@@ -771,7 +781,7 @@ print(data)
           <pre><code class="python">import requests
 
 response = requests.post(
-    'https://pay.whaile.ru:3000/create_cashier',
+    '<?php echo htmlspecialchars($api_base); ?>/create_cashier',
     json={
         'user_id': 1,
         'api_token': 'ваш_api_токен',
@@ -847,7 +857,7 @@ print(data)
           <p>Возвращает список всех касс, принадлежащих указанному пользователю.</p>
 		  
           <h3>URL</h3>
-          <pre><code class="bash">https://pay.whaile.ru:3000/cashiers/{user_id}</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($api_base); ?>/cashiers/{user_id}</code></pre>
 		  
           <h3>Метод</h3>
           <p><code>GET</code></p>
@@ -877,7 +887,7 @@ print(data)
           <pre><code class="python">import requests
 
 response = requests.get(
-    'https://pay.whaile.ru:3000/cashiers/1'
+    '<?php echo htmlspecialchars($api_base); ?>/cashiers/1'
 )
 
 data = response.json()
@@ -916,7 +926,7 @@ print(data)
           <p>Возвращает детальную информацию о конкретной кассе. Если указаны <code>user_id</code> и <code>api_token</code>, проверяется принадлежность кассы пользователю.</p>
           
           <h3>URL</h3>
-          <pre><code class="bash">https://pay.whaile.ru:3000/cashier/{cashier_id}?user_id={user_id}&api_token={api_token}</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($api_base); ?>/cashier/{cashier_id}?user_id={user_id}&api_token={api_token}</code></pre>
 		
           <h3>Метод</h3>
           <p><code>GET</code></p>
@@ -972,7 +982,7 @@ print(data)
           <pre><code class="python">import requests
 
 response = requests.get(
-    'https://pay.whaile.ru:3000/cashier/1',
+    '<?php echo htmlspecialchars($api_base); ?>/cashier/1',
     params={
         'user_id': 1,
         'api_token': 'ваш_api_токен'
@@ -1041,7 +1051,7 @@ print(data)
           <p>Активирует или деактивирует кассу. Неактивные кассы не могут принимать платежи.</p>
           
           <h3>URL</h3>
-          <pre><code class="bash">https://pay.whaile.ru:3000/cashier/{cashier_id}/status</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($api_base); ?>/cashier/{cashier_id}/status</code></pre>
           
           <h3>Метод</h3>
           <p><code>POST</code></p>
@@ -1103,7 +1113,7 @@ print(data)
           <pre><code class="python">import requests
 
 response = requests.post(
-    'https://pay.whaile.ru:3000/cashier/1/status',
+    '<?php echo htmlspecialchars($api_base); ?>/cashier/1/status',
     json={
         'user_id': 1,
         'api_token': 'ваш_api_токен',
@@ -1135,7 +1145,7 @@ print(data)
           <p>Обновляет настройки кассы. Валюта и адрес Jetton не могут быть изменены после создания.</p>
           
           <h3>URL</h3>
-          <pre><code class="bash">https://pay.whaile.ru:3000/cashier/{cashier_id}</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($api_base); ?>/cashier/{cashier_id}</code></pre>
           
           <h3>Метод</h3>
           <p><code>PUT</code></p>
@@ -1209,7 +1219,7 @@ print(data)
           <pre><code class="python">import requests
 
 response = requests.put(
-    'https://pay.whaile.ru:3000/cashier/1',
+    '<?php echo htmlspecialchars($api_base); ?>/cashier/1',
     json={
         'user_id': 1,
         'api_token': 'ваш_api_токен',
@@ -1254,7 +1264,7 @@ print(data)
           <p>Выполняет вывод средств с указанной кассы на указанный адрес кошелька. Поддерживает вывод TON и Jetton токенов.</p>
           
           <h3>URL</h3>
-          <pre><code class="bash">https://pay.whaile.ru:2998/withdraw</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($withdraw_api); ?>/withdraw</code></pre>
           
           <h3>Метод</h3>
           <p><code>POST</code></p>
@@ -1314,7 +1324,7 @@ print(data)
           <pre><code class="python">import requests
 
 response = requests.post(
-    'https://pay.whaile.ru:2998/withdraw',
+    '<?php echo htmlspecialchars($withdraw_api); ?>/withdraw',
     json={
         'cashier_id': 1,
         'amount': 1.00,
@@ -1400,7 +1410,7 @@ print(data)
 		  ============================ -->
         <section id="idocs_frontend">
           <h2>Frontend Integration</h2>
-          <p class="lead mb-5">Интеграция TON Pay в ваше приложение</p>
+          <p class="lead mb-5">Интеграция <?php echo htmlspecialchars($site_name); ?> в ваше приложение</p>
         </section>
         
         <!-- Payment URL
@@ -1413,7 +1423,7 @@ print(data)
           <p>Самый простой способ принять платеж - создать ссылку и отправить её пользователю. Пользователь перейдет по ссылке, увидит QR-код и адрес для оплаты, отправит средства, и вы получите webhook уведомление.</p>
           
           <h3>Формат ссылки</h3>
-          <pre><code class="bash">https://pay.whaile.ru/payment.php?cashier_id={id}&amount={сумма}&wallet={адрес}&currency={валюта}&payload={данные}&return_url={url}</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($site_url); ?>/payment.php?cashier_id={id}&amount={сумма}&wallet={адрес}&currency={валюта}&payload={данные}&return_url={url}</code></pre>
           
           <h3>Обязательные параметры</h3>
 			<table class="table table-bordered">
@@ -1474,16 +1484,16 @@ print(data)
           <h3>Примеры ссылок</h3>
           
           <h4>Простая ссылка для оплаты TON</h4>
-          <pre><code class="bash">https://pay.whaile.ru/payment.php?cashier_id=1&amount=10.50&wallet=...</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($site_url); ?>/payment.php?cashier_id=1&amount=10.50&wallet=...</code></pre>
           
           <h4>Ссылка с дополнительными данными</h4>
-          <pre><code class="bash">https://pay.whaile.ru/payment.php?cashier_id=1&amount=10.50&wallet=...&payload=order_id=12345&user_id=789</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($site_url); ?>/payment.php?cashier_id=1&amount=10.50&wallet=...&payload=order_id=12345&user_id=789</code></pre>
           
           <h4>Ссылка для оплаты Jetton</h4>
-          <pre><code class="bash">https://pay.whaile.ru/payment.php?cashier_id=2&amount=100.00&wallet=...&currency=jetton</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($site_url); ?>/payment.php?cashier_id=2&amount=100.00&wallet=...&currency=jetton</code></pre>
           
           <h4>Ссылка с return_url для перенаправления после оплаты</h4>
-          <pre><code class="bash">https://pay.whaile.ru/payment.php?cashier_id=1&amount=10.50&wallet=...&return_url=https://example.com/success</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($site_url); ?>/payment.php?cashier_id=1&amount=10.50&wallet=...&return_url=https://example.com/success</code></pre>
           
           <h3>Создание ссылки в коде</h3>
           
@@ -1495,7 +1505,7 @@ $wallet = "...";
 $order_id = 12345;
 
 // Создание ссылки
-$payment_url = "https://pay.whaile.ru/payment.php?" . http_build_query([
+$payment_url = "<?php echo htmlspecialchars($site_url); ?>/payment.php?" . http_build_query([
     'cashier_id' => $cashier_id,
     'amount' => $amount,
     'wallet' => $wallet,
@@ -1523,7 +1533,7 @@ params = {
     'return_url': 'https://example.com/success'  # Опционально
 }
 
-payment_url = f"https://pay.whaile.ru/payment.php?{urlencode(params)}"
+payment_url = f"<?php echo htmlspecialchars($site_url); ?>/payment.php?{urlencode(params)}"
 print(f"<a href='{payment_url}'>Оплатить {amount} TON</a>")
 </code></pre>
           
@@ -1542,7 +1552,7 @@ const params = new URLSearchParams({
     return_url: 'https://example.com/success'  // Опционально
 });
 
-const paymentUrl = `https://pay.whaile.ru/payment.php?${params.toString()}`;
+const paymentUrl = `<?php echo htmlspecialchars($site_url); ?>/payment.php?${params.toString()}`;
 console.log(`<a href="${paymentUrl}">Оплатить ${amount} TON</a>`);
 </code></pre>
           
@@ -1559,7 +1569,7 @@ console.log(`<a href="${paymentUrl}">Оплатить ${amount} TON</a>`);
           
           <h3>Редирект на чистый URL</h3>
           <p>После создания платежа происходит автоматический редирект на URL только с <code>transaction_uuid</code>:</p>
-          <pre><code class="bash">https://pay.whaile.ru/payment.php?transaction_uuid=550e8400-e29b-41d4-a716-446655440000</code></pre>
+          <pre><code class="bash"><?php echo htmlspecialchars($site_url); ?>/payment.php?transaction_uuid=550e8400-e29b-41d4-a716-446655440000</code></pre>
           <p>Это позволяет:</p>
           <ul>
             <li>Сохранить ссылку для повторного использования</li>
@@ -1570,26 +1580,26 @@ console.log(`<a href="${paymentUrl}">Оплатить ${amount} TON</a>`);
           <h3>Восстановление платежа</h3>
           <p>Если пользователь перейдет по ссылке с теми же параметрами (<code>cashier_id</code>, <code>amount</code>, <code>wallet</code>), система восстановит существующий платеж по UUID:</p>
           <pre><code class="bash"># Первый раз - создается новый платеж
-https://pay.whaile.ru/payment.php?cashier_id=1&amount=10.50&wallet=UQC...
+<?php echo htmlspecialchars($site_url); ?>/payment.php?cashier_id=1&amount=10.50&wallet=UQC...
 
 # Редирект на UUID
-https://pay.whaile.ru/payment.php?transaction_uuid=550e8400-...
+<?php echo htmlspecialchars($site_url); ?>/payment.php?transaction_uuid=550e8400-...
 
 # Повторный переход с теми же параметрами - восстановление платежа
-https://pay.whaile.ru/payment.php?cashier_id=1&amount=10.50&wallet=UQC...
+<?php echo htmlspecialchars($site_url); ?>/payment.php?cashier_id=1&amount=10.50&wallet=UQC...
 </code></pre>
           
           <h3>Готовые примеры для копирования</h3>
           
           <h4>HTML кнопка</h4>
           <pre><code class="html">&lt;!-- Простая кнопка оплаты --&gt;
-&lt;a href="https://pay.whaile.ru/payment.php?cashier_id=1&amount=10.50&wallet=..." 
+&lt;a href="<?php echo htmlspecialchars($site_url); ?>/payment.php?cashier_id=1&amount=10.50&wallet=..." 
    class="btn btn-primary"&gt;
   Оплатить 10.50 TON
 &lt;/a&gt;</code></pre>
           
           <h4>HTML форма</h4>
-          <pre><code class="html">&lt;form action="https://pay.whaile.ru/payment.php" method="GET"&gt;
+          <pre><code class="html">&lt;form action="<?php echo htmlspecialchars($site_url); ?>/payment.php" method="GET"&gt;
   &lt;input type="hidden" name="cashier_id" value="1"&gt;
   &lt;input type="hidden" name="amount" value="10.50"&gt;
   &lt;input type="hidden" name="wallet" value="..."&gt;
@@ -1957,7 +1967,7 @@ app.listen(3000);
 
 # Проверка статуса по ID и валюте
 response = requests.get(
-    'https://pay.whaile.ru:3000/payment_status/ton/123'
+    '<?php echo htmlspecialchars($api_base); ?>/payment_status/ton/123'
 )
 
 data = response.json()
@@ -1969,7 +1979,7 @@ print(f"Status: {data['payment_status']}")
 
 # Получение платежа по UUID
 response = requests.get(
-    'https://pay.whaile.ru:3000/payment_by_uuid/550e8400-e29b-41d4-a716-446655440000'
+    '<?php echo htmlspecialchars($api_base); ?>/payment_by_uuid/550e8400-e29b-41d4-a716-446655440000'
 )
 
 data = response.json()
@@ -1995,8 +2005,8 @@ print(f"Status: {data['payment_status']}")
           <pre><code class="python">import requests
 import time
 
-API_BASE = "https://pay.whaile.ru:3000"
-WITHDRAW_API = "https://pay.whaile.ru:2998"
+API_BASE = "<?php echo htmlspecialchars($api_base); ?>"
+WITHDRAW_API = "<?php echo htmlspecialchars($withdraw_api); ?>"
 
 # Ваши данные
 USER_ID = 1
@@ -2069,8 +2079,8 @@ if __name__ == "__main__":
           
           <h3>Полная интеграция</h3>
           <pre><code class="php">&lt;?php
-$api_base = "https://pay.whaile.ru:3000";
-$withdraw_api = "https://pay.whaile.ru:2998";
+$api_base = "<?php echo htmlspecialchars($api_base); ?>";
+$withdraw_api = "<?php echo htmlspecialchars($withdraw_api); ?>";
 $user_id = 1;
 $api_token = "ваш_api_токен";
 $cashier_id = 1;
@@ -2141,8 +2151,8 @@ echo "Payment status: " . $status['payment_status'] . "\n";
           <h2>Пример на JavaScript</h2>
           
           <h3>Полная интеграция</h3>
-          <pre><code class="javascript">const API_BASE = "https://pay.whaile.ru:3000";
-const WITHDRAW_API = "https://pay.whaile.ru:2998";
+          <pre><code class="javascript">const API_BASE = "<?php echo htmlspecialchars($api_base); ?>";
+const WITHDRAW_API = "<?php echo htmlspecialchars($withdraw_api); ?>";
 const USER_ID = 1;
 const API_TOKEN = "ваш_api_токен";
 const CASHIER_ID = 1;

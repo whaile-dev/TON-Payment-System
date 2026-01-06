@@ -3,7 +3,10 @@
 function getConfig() {
     $config = [
         "site" => [
-            "link" => "https://pay.whaile.ru/"
+            "name" => "TonPay",
+            "url" => "https://pay.whaile.ru",
+            "api_port" => 3000,
+            "withdraw_port" => 2998
         ],
         "database" => [
             "user" => "",

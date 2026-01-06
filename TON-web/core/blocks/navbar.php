@@ -6,14 +6,19 @@ $container_class = $container_class ?? 'container';
 $container_style = ($container_class === 'container') ? 'style="width: calc(100% - var(--bs-gutter-x,.75rem))"' : '';
 $show_auth_buttons = $show_auth_buttons ?? false;
 $is_auth = getCore()->isAuth();
+$config_path = $_SERVER['DOCUMENT_ROOT'] . '/config.php';
+if (file_exists($config_path)) {
+    require_once($config_path);
+}
+$config = getConfig();
+$site_name = $config['site']['name'] ?? 'TonPay';
 ?>
-<!-- Навигация -->
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-navbar">
     <div class="<?php echo htmlspecialchars($container_class); ?>" <?php echo $container_style; ?>>
         <a class="navbar-brand" href="<?php echo htmlspecialchars($home_link); ?>">
             <div class="brand-logo">
-                <img src="scripts/img/logo.svg" alt="TON Pay" class="brand-logo-img me-2" style="height: 32px; width: 32px;">
-                <span class="ton-glow">TON</span>Pay
+                <img src="scripts/img/logo.svg" alt="<?php echo htmlspecialchars($site_name); ?>" class="brand-logo-img me-2" style="height: 32px; width: 32px;">
+                <span class="ton-glow"><?php echo htmlspecialchars($site_name); ?></span>
             </div>
         </a>
 
@@ -73,7 +78,7 @@ $is_auth = getCore()->isAuth();
                             Войти / Регистрация
                         </button>
                         <script>
-                        // Ранняя инициализация кнопок авторизации (выполняется сразу после рендера)
+    
                         (function() {
                             const loginBtn = document.getElementById('loginBtn');
                             const registerBtn = document.getElementById('registerBtn');
@@ -81,31 +86,25 @@ $is_auth = getCore()->isAuth();
                             const navbarActions = document.querySelector('.navbar-actions');
                             
                             if (!loginBtn || !registerBtn || !combinedBtn || !navbarActions) return;
-                            
-                            // Быстрая проверка на основе ширины экрана
+             
                             function quickInit() {
                                 const screenWidth = window.innerWidth;
-                                
-                                // На очень маленьких экранах сразу показываем общую кнопку
+                   
                                 if (screenWidth < 400) {
                                     loginBtn.style.display = 'none';
                                     registerBtn.style.display = 'none';
                                     combinedBtn.style.display = 'block';
                                     return;
                                 }
-                                
-                                // Получаем размеры контейнера
+
                                 const navbarActionsRect = navbarActions.getBoundingClientRect();
                                 const containerWidth = navbarActionsRect.width || window.innerWidth;
-                                
-                                // Приблизительная ширина кнопок: "Войти" ~80px, "Регистрация" ~130px, gap ~8px
-                                // На мобильных устройствах кнопки могут быть шире из-за padding
+
                                 const estimatedLoginWidth = screenWidth < 768 ? 90 : 80;
                                 const estimatedRegisterWidth = screenWidth < 768 ? 150 : 130;
                                 const gap = 8;
                                 const estimatedTotalWidth = estimatedLoginWidth + estimatedRegisterWidth + gap;
-                                
-                                // Если контейнер слишком узкий, показываем общую кнопку
+
                                 if (containerWidth < estimatedTotalWidth + 30 || screenWidth < 500) {
                                     loginBtn.style.display = 'none';
                                     registerBtn.style.display = 'none';
@@ -122,11 +121,9 @@ $is_auth = getCore()->isAuth();
                                     combinedBtn.classList.remove('hidden');
                                 }
                             }
-                            
-                            // Выполняем сразу
+
                             quickInit();
-                            
-                            // И еще раз после минимальной задержки для учета применения стилей
+
                             if (window.requestAnimationFrame) {
                                 requestAnimationFrame(quickInit);
                             } else {

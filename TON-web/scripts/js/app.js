@@ -1024,11 +1024,31 @@ window.initCustomSelect = function(selectId, dropdownId, hiddenInputId, onChange
             const value = option.getAttribute('data-value');
             const text = option.textContent.trim();
             
-            const selectText = select.querySelector('.custom-select-text');
+            let selectText = select.querySelector('.custom-select-text');
+            const selectPlaceholder = select.querySelector('.custom-select-placeholder');
+            
+            if (selectPlaceholder && !selectText) {
+                selectPlaceholder.classList.remove('custom-select-placeholder');
+                selectPlaceholder.classList.add('custom-select-text');
+                selectText = selectPlaceholder;
+            }
+            
             if (selectText) {
                 selectText.textContent = text;
+            } else {
+                const span = document.createElement('span');
+                span.className = 'custom-select-text';
+                span.textContent = text;
+                const arrow = select.querySelector('.custom-select-arrow');
+                if (arrow) {
+                    select.insertBefore(span, arrow);
+                } else {
+                    select.appendChild(span);
+                }
             }
+            
             hiddenInput.value = value;
+            select.setAttribute('data-value', value);
    
             dropdown.querySelectorAll('.custom-select-option').forEach(opt => {
                 opt.classList.remove('selected');

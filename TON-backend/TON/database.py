@@ -454,7 +454,7 @@ def check_and_update_transaction(tx_hash, sender_address, amount, time, signatur
                         conn.rollback()
                         return False
                     
-                    if cashier_data['currency'] != expected_currency:
+                    if cashier_data['currency'].upper() != expected_currency.upper():
                         logger.error(f"Валюта кассы не совпадает: ожидалось {expected_currency}, получено {cashier_data['currency']}")
                         conn.rollback()
                         return False
@@ -463,7 +463,7 @@ def check_and_update_transaction(tx_hash, sender_address, amount, time, signatur
                         UPDATE Cashiers 
                         SET balance = balance + %s 
                         WHERE id = %s AND currency = %s
-                    """, (amount_float, cashier_id, expected_currency))
+                    """, (amount_float, cashier_id, cashier_data['currency']))
                     
                     if cursor.rowcount == 0:
                         logger.error(f"Не удалось начислить баланс для кассы {cashier_id}")

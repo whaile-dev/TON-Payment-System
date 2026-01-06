@@ -5,7 +5,14 @@ class HttpClient {
     private $defaultOptions;
     
     public function __construct($baseUrl = null) {
-        $this->baseUrl = $baseUrl ?? 'https://pay.whaile.ru:3000';
+        if ($baseUrl === null) {
+            require_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+            $config = getConfig();
+            $site_url = $config['site']['url'] ?? 'https://pay.whaile.ru';
+            $api_port = $config['site']['api_port'] ?? 3000;
+            $baseUrl = $site_url . ':' . $api_port;
+        }
+        $this->baseUrl = $baseUrl;
         $this->defaultOptions = [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_SSL_VERIFYPEER => true,

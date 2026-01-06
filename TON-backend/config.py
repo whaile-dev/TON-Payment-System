@@ -12,6 +12,8 @@ PAYMENT_TIMEOUT_SECONDS = 20 * 60
 
 MIN_ESTIMATED_FEE = 0.01
 
+SITE_URL = "https://pay.whaile.ru"
+
 api_key = ""
 toncenter_api_key = ""
 

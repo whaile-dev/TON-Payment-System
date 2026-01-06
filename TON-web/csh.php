@@ -1,5 +1,13 @@
 <?php
 require_once($_SERVER['DOCUMENT_ROOT'] . '/core/core.php');
+require_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+$config = getConfig();
+$site_name = $config['site']['name'] ?? 'TonPay';
+$site_url = $config['site']['url'] ?? 'https://pay.whaile.ru';
+$api_port = $config['site']['api_port'] ?? 3000;
+$withdraw_port = $config['site']['withdraw_port'] ?? 2998;
+$api_base = $site_url . ':' . $api_port;
+$withdraw_api = $site_url . ':' . $withdraw_port;
 
 if (!getCore()->isAuth()) {
     header('Location: /');
@@ -603,7 +611,7 @@ $created_date = isset($cashier['created_at']) ? date('d.m.Y', strtotime($cashier
     <meta name="csrf-token" content="<?php echo htmlspecialchars($csrf_token); ?>">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Касса "<?php echo htmlspecialchars($cashier['name'] ?? 'Без названия'); ?>" | TON Pay</title>
+    <title>Касса "<?php echo htmlspecialchars($cashier['name'] ?? 'Без названия'); ?>" | <?php echo htmlspecialchars($site_name); ?></title>
     <link rel="apple-touch-icon" href="scripts/img/logo.svg">
     <link rel="stylesheet" href="scripts/libs/font-awesome/css/all.min.css">
     <link rel="stylesheet" href="scripts/libs/bootstrap-icons/font/bootstrap-icons.min.css">
@@ -2311,7 +2319,7 @@ require_once('core/blocks/navbar.php');
                     <div class="main-content">
                         <div class="chart-container">
                             <h3 class="chart-title">Документация по интеграции</h3>
-                            <p>Используйте наш REST API для интеграции платежей TON Pay в ваше приложение или сайт.</p>
+                            <p>Используйте наш REST API для интеграции платежей <?php echo htmlspecialchars($site_name); ?> в ваше приложение или сайт.</p>
 
                             <h5 class="mt-4">API Токен</h5>
                             <p>Для работы с API требуется API токен. Вы можете получить его в <a href="/dashboard.php" style="color: var(--ton-primary); text-decoration: underline;">вашем кабинете</a> в разделе "API Токен".</p>
@@ -2326,13 +2334,13 @@ require_once('core/blocks/navbar.php');
 
                             <h5 class="mt-4">Базовый URL</h5>
                             <div class="integration-code">
-                                https://pay.whaile.ru:3000
+                                <?php echo htmlspecialchars($api_base); ?>
                             </div>
 
                             <h5 class="mt-4">Создание платежа</h5>
                             <p>Для создания платежа отправьте POST запрос на <code>/create_payment</code>:</p>
                             <div class="integration-code">
-                                POST https://pay.whaile.ru:3000/create_payment<br>
+                                POST <?php echo htmlspecialchars($api_base); ?>/create_payment<br>
                                 Content-Type: application/json<br><br>
                                 {<br>
                                 &nbsp;&nbsp;"cashier_id": <?php echo htmlspecialchars($cashier_id); ?>,<br>
@@ -2348,7 +2356,7 @@ require_once('core/blocks/navbar.php');
                             <h5 class="mt-4">Создание платежной ссылки</h5>
                             <p>Самый простой способ - создать прямую ссылку на страницу оплаты:</p>
                             <div class="integration-code">
-                                https://pay.whaile.ru/payment.php?<br>
+                                <?php echo htmlspecialchars($site_url); ?>/payment.php?<br>
                                 &nbsp;&nbsp;cashier_id=<?php echo htmlspecialchars($cashier_id); ?>&<br>
                                 &nbsp;&nbsp;amount=10.50&<br>
                                 &nbsp;&nbsp;wallet=UQ...&<br>
@@ -2358,15 +2366,15 @@ require_once('core/blocks/navbar.php');
                             <h5 class="mt-4">Проверка статуса платежа</h5>
                             <p>Для проверки статуса отправьте GET запрос:</p>
                             <div class="integration-code">
-                                GET https://pay.whaile.ru:3000/payment_status/{currency}/{payment_id}<br><br>
+                                GET <?php echo htmlspecialchars($api_base); ?>/payment_status/{currency}/{payment_id}<br><br>
                                 Пример:<br>
-                                GET https://pay.whaile.ru:3000/payment_status/ton/123
+                                GET <?php echo htmlspecialchars($api_base); ?>/payment_status/ton/123
                             </div>
 
                             <h5 class="mt-4">Вывод средств</h5>
                             <p>Для вывода средств отправьте POST запрос на <code>/withdraw</code>:</p>
                             <div class="integration-code">
-                                POST https://pay.whaile.ru:2998/withdraw<br>
+                                POST <?php echo htmlspecialchars($withdraw_api); ?>/withdraw<br>
                                 Content-Type: application/json<br><br>
                                 {<br>
                                 &nbsp;&nbsp;"cashier_id": <?php echo htmlspecialchars($cashier_id); ?>,<br>
@@ -3938,7 +3946,7 @@ require_once('core/blocks/navbar.php');
         if (!balanceElement) return;
         
         const cashierId = <?php echo $cashier_id_int; ?>;
-        const apiUrl = 'https://pay.whaile.ru:3000/cashier/' + cashierId;
+        const apiUrl = '<?php echo htmlspecialchars($api_base); ?>/cashier/' + cashierId;
         
         fetch(apiUrl + '?user_id=<?php echo $user_id_int; ?>&api_token=<?php echo urlencode($api_token); ?>', {
             method: 'GET',
