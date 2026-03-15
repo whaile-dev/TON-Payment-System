@@ -2293,7 +2293,12 @@ async function withdraw(cashierId, amount, wallet) {
   ============================ -->
   <footer id="footer" class="section bg-dark footer-text-light">
     <div class="container">
-      <p class="text-center">Copyright &copy; <span id="currentYear"></span>. All Rights Reserved.</p>
+      <p class="text-center mb-0">
+        &copy; <span id="currentYear"></span> <?php echo htmlspecialchars($site_name); ?>. Все права защищены. Документация API платёжной системы TON.
+      </p>
+      <p class="text-center mt-2 mb-0 small opacity-75">
+        <a href="https://whaile.ru/" target="_blank" rel="noopener" class="text-decoration-none">by _whaile_</a>
+      </p>
     </div>
   </footer>
   <!-- Footer end -->

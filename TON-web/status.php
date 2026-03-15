@@ -381,6 +381,21 @@ if ($conn && !$conn->connect_error) {
     }
 }
 
+$cold_wallet_status = ['enabled' => false, 'address_set' => false, 'threshold_ton' => 1000];
+if ($conn && !$conn->connect_error) {
+    try {
+        require_once($_SERVER['DOCUMENT_ROOT'] . '/core/cold_wallet_config.php');
+        $cw = getColdWalletConfig($conn);
+        $cold_wallet_status = [
+            'enabled' => !empty($cw['enabled']),
+            'address_set' => !empty(trim((string)($cw['address'] ?? ''))),
+            'threshold_ton' => (float)($cw['large_withdraw_threshold_ton'] ?? 1000)
+        ];
+    } catch (Throwable $e) {
+        error_log("Cold wallet status check: " . $e->getMessage());
+    }
+}
+
 $uptime_percentage = 99.9;
 if ($uptime['seconds'] > 0) {
     $days_uptime = $uptime['days'] + ($uptime['hours'] / 24);
@@ -701,102 +716,155 @@ $overall_status = getOverallSystemStatus($api_status, $db_status, $cpu_usage, $m
             color: var(--ton-error);
         }
 
-        .services-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 1.5rem;
+        .services-section {
             margin-bottom: 3rem;
         }
 
+        .services-section .section-title {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--ton-text);
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (min-width: 1200px) {
+            .services-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
         .service-card {
-            background: var(--ton-card);
+            background: var(--ton-card-bg, var(--ton-card));
             border: 1px solid var(--ton-border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
+            border-radius: 20px;
+            padding: 1.75rem 1.5rem;
+            transition: border-color 0.25s ease, box-shadow 0.25s ease;
+            display: flex;
+            flex-direction: column;
+            min-height: 220px;
         }
 
         .service-card:hover {
-            border-color: rgba(0, 136, 204, 0.3);
+            border-color: rgba(0, 136, 204, 0.35);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        [data-bs-theme="light"] .service-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
         }
 
         .service-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
+            align-items: flex-start;
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
         }
 
         .service-name {
             font-weight: 600;
+            font-size: 1rem;
             color: var(--ton-text);
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            line-height: 1.3;
+            min-width: 0;
         }
 
         .service-icon {
-            width: 32px;
-            height: 32px;
-            border-radius: 8px;
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.1rem;
+            font-size: 1.15rem;
+            flex-shrink: 0;
         }
 
         .service-status {
-            padding: 0.375rem 0.75rem;
-            border-radius: 20px;
+            padding: 0.45rem 0.85rem;
+            border-radius: 10px;
             font-size: 0.75rem;
             font-weight: 600;
+            white-space: nowrap;
+            flex-shrink: 0;
         }
 
         .service-operational {
-            background: rgba(34, 197, 94, 0.1);
+            background: rgba(34, 197, 94, 0.12);
             color: var(--ton-success);
-            border: 1px solid rgba(34, 197, 94, 0.2);
+            border: 1px solid rgba(34, 197, 94, 0.25);
         }
 
         .service-degraded {
-            background: rgba(234, 179, 8, 0.1);
+            background: rgba(234, 179, 8, 0.12);
             color: var(--ton-warning);
-            border: 1px solid rgba(234, 179, 8, 0.2);
+            border: 1px solid rgba(234, 179, 8, 0.25);
         }
 
         .service-outage {
-            background: rgba(239, 68, 68, 0.1);
+            background: rgba(239, 68, 68, 0.12);
             color: var(--ton-error);
-            border: 1px solid rgba(239, 68, 68, 0.2);
+            border: 1px solid rgba(239, 68, 68, 0.25);
         }
 
         .service-maintenance {
-            background: rgba(0, 136, 204, 0.1);
+            background: rgba(0, 136, 204, 0.12);
             color: var(--ton-primary);
-            border: 1px solid rgba(0, 136, 204, 0.2);
+            border: 1px solid rgba(0, 136, 204, 0.25);
+        }
+
+        .service-description {
+            font-size: 0.875rem;
+            color: var(--ton-text-secondary);
+            line-height: 1.45;
+            margin: 0 0 1rem 0;
+            flex: 1;
         }
 
         .service-metrics {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1rem;
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+            margin-top: auto;
+            padding-top: 1.25rem;
+            border-top: 1px solid var(--ton-border);
         }
 
-        .metric {
+        .service-metrics .metric {
+            flex: 1;
             text-align: center;
+            padding: 0 0.75rem;
+            border-right: 1px solid var(--ton-border);
         }
 
-        .metric-value {
-            font-size: 1.25rem;
+        .service-metrics .metric:last-child {
+            border-right: none;
+        }
+
+        .service-metrics .metric-value {
+            font-size: 1.2rem;
             font-weight: 600;
             color: var(--ton-text);
+            display: block;
         }
 
-        .metric-label {
-            font-size: 0.8rem;
+        .service-metrics .metric-label {
+            font-size: 0.75rem;
             color: var(--ton-text-secondary);
-            margin-top: 0.25rem;
+            margin-top: 0.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
         }
 
         .incidents-section {
@@ -972,10 +1040,17 @@ $overall_status = getOverallSystemStatus($api_status, $db_status, $cpu_usage, $m
 
             .services-grid {
                 grid-template-columns: 1fr;
+                gap: 1.25rem;
             }
 
-            .service-metrics {
-                grid-template-columns: 1fr;
+            .service-card {
+                min-height: 200px;
+                padding: 1.5rem 1.25rem;
+            }
+
+            .service-status {
+                white-space: normal;
+                font-size: 0.7rem;
             }
 
             .stats-grid {
@@ -1197,6 +1272,37 @@ require_once('core/blocks/navbar.php');
                         <div class="metric">
                             <div class="metric-value"><?php echo $db_status['error_rate'] > 0 ? number_format($db_status['error_rate'], 1) : '0'; ?>%</div>
                             <div class="metric-label">Ошибок</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="service-card">
+                    <div class="service-header">
+                        <div class="service-name">
+                            <div class="service-icon" style="background: rgba(34, 197, 94, 0.1); color: var(--ton-success);">
+                                <i class="fas fa-shield-halved"></i>
+                            </div>
+                            Холодный кошелёк
+                        </div>
+                        <div class="service-status <?php echo $cold_wallet_status['enabled'] ? ($cold_wallet_status['address_set'] ? 'service-operational' : 'service-degraded') : 'service-maintenance'; ?>">
+                            <?php
+                            if ($cold_wallet_status['enabled']) {
+                                echo $cold_wallet_status['address_set'] ? 'Включён' : 'Включён, адрес не задан';
+                            } else {
+                                echo 'Выключен';
+                            }
+                            ?>
+                        </div>
+                    </div>
+                    <p class="service-description">Подтверждение выводов администратором</p>
+                    <div class="service-metrics">
+                        <div class="metric">
+                            <div class="metric-value"><?php echo $cold_wallet_status['enabled'] ? 'Да' : 'Нет'; ?></div>
+                            <div class="metric-label">Включён</div>
+                        </div>
+                        <div class="metric">
+                            <div class="metric-value"><?php echo $cold_wallet_status['address_set'] ? 'Задан' : '—'; ?></div>
+                            <div class="metric-label">Адрес</div>
                         </div>
                     </div>
                 </div>

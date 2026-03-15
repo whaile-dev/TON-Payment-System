@@ -172,7 +172,42 @@ if (!$api_token) {
     }
     
     require_once($_SERVER['DOCUMENT_ROOT'] . '/config.php');
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/core/cold_wallet_config.php');
     $config = getConfig();
+    $cold_wallet = getColdWalletConfig(getCore()->getConn());
+    $cold_enabled = !empty($cold_wallet['enabled']);
+    $cold_threshold = isset($cold_wallet['large_withdraw_threshold_ton']) ? (float)$cold_wallet['large_withdraw_threshold_ton'] : 1000.0;
+    
+    if ($cold_enabled && $amount >= $cold_threshold) {
+        $conn = getCore()->getConn();
+        $conn->query("CREATE TABLE IF NOT EXISTS PendingColdWithdraw (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            user_id INT NOT NULL,
+            cashier_id INT NOT NULL,
+            amount DECIMAL(20,9) NOT NULL,
+            wallet VARCHAR(100) NOT NULL,
+            currency VARCHAR(20) NOT NULL DEFAULT 'TON',
+            api_token VARCHAR(255) NOT NULL,
+            status VARCHAR(20) NOT NULL DEFAULT 'pending',
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            executed_at DATETIME NULL
+        )");
+        $user_id_int = intval($user_id);
+        $stmt = $conn->prepare("INSERT INTO PendingColdWithdraw (user_id, cashier_id, amount, wallet, currency, api_token, status) VALUES (?, ?, ?, ?, ?, ?, 'pending')");
+        $stmt->bind_param("iidsss", $user_id_int, $cashier_id, $amount, $wallet, $currency, $api_token);
+        $stmt->execute();
+        $pending_id = $conn->insert_id;
+        $stmt->close();
+        logSecurityEvent('withdraw_pending_cold', ['user_id' => $user_id_int, 'cashier_id' => $cashier_id, 'amount' => $amount]);
+        echo json_encode([
+            'success' => true,
+            'pending_cold' => true,
+            'message' => 'Вывод от 1000 TON ожидает подтверждения администратором.',
+            'data' => ['id' => $pending_id]
+        ]);
+        exit();
+    }
+    
     $site_url = $config['site']['url'] ?? 'https://pay.whaile.ru';
     $withdraw_port = $config['site']['withdraw_port'] ?? 2998;
     $withdraw_api = $site_url . ':' . $withdraw_port;

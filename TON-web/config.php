@@ -20,6 +20,15 @@ function getConfig() {
         "security" => [
             "public_pages" => ['/status', '/index', '/docs', '/payment'],
             "protected_paths" => ['/dashboard', '/csh']
+        ],
+        "admins" => [
+            "admin@example.ru"
+        ],
+        "cold_wallet" => [
+            "enabled" => true,
+            "address" => "",
+            "label" => "SafePal S1 (резерв)",
+            "large_withdraw_threshold_ton" => 1000.0
         ]
     ];
 

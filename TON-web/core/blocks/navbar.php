@@ -12,6 +12,9 @@ if (file_exists($config_path)) {
 }
 $config = getConfig();
 $site_name = $config['site']['name'] ?? 'TonPay';
+$admins = $config['admins'] ?? [];
+$admin_emails = is_array($admins) ? array_map('strval', $admins) : [];
+$is_admin = $is_auth && isset($_SESSION['email']) && in_array(trim((string)$_SESSION['email']), $admin_emails, true);
 ?>
 <nav class="navbar navbar-expand-lg navbar-dark fixed-top glass-navbar">
     <div class="<?php echo htmlspecialchars($container_class); ?>" <?php echo $container_style; ?>>
@@ -57,6 +60,11 @@ $site_name = $config['site']['name'] ?? 'TonPay';
                             <a class="user-dropdown-item" href="/dashboard.php">
                                 <i class="fas fa-chart-line me-2"></i> Кабинет
                             </a>
+                            <?php if (!empty($is_admin)): ?>
+                            <a class="user-dropdown-item" href="/admin.php">
+                                <i class="fas fa-shield-alt me-2"></i> Админка
+                            </a>
+                            <?php endif; ?>
                             <a class="user-dropdown-item" href="/">
                                 <i class="fas fa-home me-2"></i> Главная
                             </a>

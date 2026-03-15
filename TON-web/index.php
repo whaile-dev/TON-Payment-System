@@ -2,6 +2,12 @@
 require_once($_SERVER['DOCUMENT_ROOT'] . '/core/core.php');
 $config = getConfig();
 $site_name = $config['site']['name'] ?? 'TonPay';
+$cold_wallet = ['enabled' => false, 'address' => '', 'large_withdraw_threshold_ton' => 1000];
+$conn = getCore()->getConn();
+if ($conn && !$conn->connect_error) {
+    require_once($_SERVER['DOCUMENT_ROOT'] . '/core/cold_wallet_config.php');
+    $cold_wallet = getColdWalletConfig($conn);
+}
 ?>
 
 <!DOCTYPE html>
@@ -424,6 +430,14 @@ require_once('core/blocks/navbar.php');
                             <div>
                                 <h5>Проверка транзакций</h5>
                                 <p>Автоматическая проверка всех платежей на блокчейне. Гарантия получения средств</p>
+                            </div>
+                        </div>
+
+                        <div class="security-item">
+                            <div class="security-icon"><i class="fas fa-shield-halved"></i></div>
+                            <div>
+                                <h5>Холодный кошелёк SafePal S1</h5>
+                                <p>Крупные выводы (от <?php echo (int)$cold_wallet['large_withdraw_threshold_ton']; ?> TON) подтверждаются холодным кошельком. Ключи офлайн, подпись по QR.</p>
                             </div>
                         </div>
                     </div>
