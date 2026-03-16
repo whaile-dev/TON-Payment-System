@@ -19,17 +19,10 @@ $withdraw_api = $site_url . ':' . $withdraw_port;
 <meta name="description" content="Документация API для интеграции платежной системы <?php echo htmlspecialchars($site_name); ?>">
 <meta name="author" content="<?php echo htmlspecialchars($site_name); ?>">
 
-<!-- Stylesheet
-============================== -->
-<!-- Bootstrap -->
 <link rel="stylesheet" type="text/css" href="scripts/assets/vendor/bootstrap/css/bootstrap.min.css" />
-<!-- Font Awesome Icon -->
 <link rel="stylesheet" type="text/css" href="scripts/assets/vendor/font-awesome/css/all.min.css" />
-<!-- Magnific Popup -->
 <link rel="stylesheet" type="text/css" href="scripts/assets/vendor/magnific-popup/magnific-popup.min.css" />
-<!-- Highlight Syntax -->
 <link rel="stylesheet" type="text/css" href="scripts/assets/vendor/highlight.js/styles/github.css" />
-<!-- Custom Stylesheet -->
 <link rel="stylesheet" type="text/css" href="scripts/assets/css/stylesheet.css" />
 </head>
 
@@ -41,7 +34,6 @@ try {
 } catch(e){}
 </script>
 
-<!-- Preloader -->
 <div class="preloader">
   <div class="lds-ellipsis">
     <div></div>
@@ -50,39 +42,33 @@ try {
     <div></div>
   </div>
 </div>
-<!-- Preloader End --> 
 
-<!-- Document Wrapper   
-=============================== -->
 <div id="main-wrapper"> 
   
-  <!-- Header
-  ============================ -->
   <header id="header" class="sticky-top"> 
-    <!-- Navbar -->
     <nav class="primary-menu navbar navbar-expand-lg navbar-dropdown-dark">
       <div class="container-fluid">
-        <!-- Sidebar Toggler -->
 		<button id="sidebarCollapse" class="navbar-toggler d-block d-md-none" type="button"><span></span><span class="w-75"></span><span class="w-50"></span></button>
 		
-		<!-- Logo --> 
         <a class="logo ml-md-3" href="/" title="iDocs Template" style="text-decoration: none !important; font-size: 1.5rem; font-weight: 700"><?php echo htmlspecialchars($site_name); ?></a>
-        <!-- Logo End -->
 
         <button id="theme-toggle" class="btn btn-sm btn-outline-secondary ml-3" style="margin-right: 1rem;"><i class="fas fa-moon"></i></button>
       </div>
     </nav>
-    <!-- Navbar End --> 
   </header>
-  <!-- Header End --> 
   
-  <!-- Content
-  ============================ -->
   <div id="content" role="main">
     
-	<!-- Sidebar Navigation
-	============================ -->
 	<div class="idocs-navigation bg-light">
+      <div class="p-3 border-bottom docs-search-wrapper">
+        <div class="input-group input-group-sm">
+          <div class="input-group-prepend">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+          </div>
+          <input type="text" id="docs-search" class="form-control" placeholder="Быстрый поиск">
+        </div>
+        <div id="docs-search-result" class="mt-2 small"></div>
+      </div>
       <ul class="nav flex-column ">
         <li class="nav-item"><a class="nav-link active" href="#idocs_start">Начало работы</a>
           <ul class="nav flex-column">
@@ -131,13 +117,9 @@ try {
       </ul>
     </div>
     
-    <!-- Docs Content
-	============================ -->
     <div class="idocs-content">
       <div class="container"> 
         
-        <!-- Getting Started
-		============================ -->
         <section id="idocs_start">
         <h1>Документация <?php echo htmlspecialchars($site_name); ?> API</h1>
         <h2>Полное руководство по интеграции</h2>
@@ -162,8 +144,6 @@ try {
         
 		<hr class="divider">
 		
-        <!-- Introduction
-		============================ -->
         <section id="idocs_introduction">
           <h2>Введение</h2>
           <p class="lead"><?php echo htmlspecialchars($site_name); ?> предоставляет простой и безопасный способ приема платежей в TON и Jetton токенах.</p>
@@ -194,8 +174,6 @@ try {
         
 		<hr class="divider">
 		
-        <!-- Authentication
-		============================ -->
         <section id="idocs_authentication">
           <h2>Аутентификация</h2>
           <p>Для работы с API требуется API токен, который вы можете получить после регистрации и входа в систему.</p>
@@ -227,8 +205,6 @@ try {
         
 		<hr class="divider">
 		        
-        <!-- Base URL
-		============================ -->
         <section id="idocs_base_url">
           <h2>Базовый URL</h2>
           <p>API доступно по следующим адресам:</p>
@@ -258,8 +234,6 @@ try {
         
 		<hr class="divider">
 		
-        <!-- Currency
-		============================ -->
         <section id="idocs_currency">
           <h2>Валюта и суммы</h2>
           
@@ -295,15 +269,11 @@ try {
         
 		<hr class="divider">
 		
-        <!-- Payment API
-		============================ -->
         <section id="idocs_payment_api">
           <h2>Payment API</h2>
           <p class="lead mb-5">API для создания и управления платежами</p>
         </section>
         
-        <!-- Create Payment
-		============================ -->
         <section id="idocs_create_payment">
           <h2>POST /create_payment</h2>
           <p class="lead">Создание нового платежа</p>
@@ -513,8 +483,6 @@ print(data)
 		
 		<hr class="divider">
 		
-        <!-- Payment by UUID
-		============================ -->
         <section id="idocs_payment_by_uuid">
           <h2>GET /payment_by_uuid/{transaction_uuid}</h2>
           <p class="lead">Получение платежа по UUID транзакции</p>
@@ -600,12 +568,10 @@ print(data)
               </tr>
             </tbody>
           </table>
-		</section>
+        </section>
 		
 		<hr class="divider">
 		
-        <!-- Payment Status
-		============================ -->
         <section id="idocs_payment_status">
           <h2>GET /payment_status/{currency}/{payment_id}</h2>
           <p class="lead">Получение статуса платежа</p>
@@ -670,15 +636,11 @@ print(data)
 		
 		<hr class="divider">
 		
-		<!-- Cashier API
-		============================ -->
         <section id="idocs_cashier_api">
           <h2>Cashier API</h2>
           <p class="lead mb-5">API для управления платежными кассами</p>
         </section>
 		  
-        <!-- Create Cashier
-		============================ -->
         <section id="idocs_create_cashier">
           <h2>POST /create_cashier</h2>
           <p class="lead">Создание новой платежной кассы</p>
@@ -843,12 +805,10 @@ print(data)
               </tr>
             </tbody>
           </table>
-		</section>
+        </section>
 		
 		<hr class="divider">
 		
-        <!-- Get Cashiers
-		============================ -->
         <section id="idocs_get_cashiers">
           <h2>GET /cashiers/{user_id}</h2>
           <p class="lead">Получение списка касс пользователя</p>
@@ -912,12 +872,10 @@ print(data)
   ]
 }
 </code></pre>
-		</section>
+        </section>
 		
 		<hr class="divider">
 		
-        <!-- Get Cashier
-		============================ -->
         <section id="idocs_get_cashier">
           <h2>GET /cashier/{cashier_id}</h2>
           <p class="lead">Получение информации о кассе</p>
@@ -1037,12 +995,10 @@ print(data)
     </tr>
   </tbody>
 </table>
-		</section>
+        </section>
 		
 		<hr class="divider">
 		
-        <!-- Update Cashier Status
-		============================ -->
         <section id="idocs_update_cashier_status">
           <h2>POST /cashier/{cashier_id}/status</h2>
           <p class="lead">Изменение статуса кассы</p>
@@ -1135,8 +1091,6 @@ print(data)
 		
 		<hr class="divider">
 		
-        <!-- Update Cashier
-		============================ -->
         <section id="idocs_update_cashier">
           <h2>PUT /cashier/{cashier_id}</h2>
           <p class="lead">Обновление настроек кассы</p>
@@ -1243,8 +1197,6 @@ print(data)
 		
 		<hr class="divider">
 		
-		<!-- Withdraw API
-		============================ -->
         <section id="idocs_withdraw_api">
           <h2>Withdraw API</h2>
           <p class="lead mb-5">API для вывода средств с касс</p>
@@ -1254,8 +1206,6 @@ print(data)
           </div>
         </section>
 		  
-        <!-- Withdraw
-		  ============================ -->
         <section id="idocs_withdraw">
           <h2>POST /withdraw</h2>
           <p class="lead">Вывод средств с кассы</p>
@@ -2287,10 +2237,7 @@ async function withdraw(cashierId, amount, wallet) {
     </div>
 	
   </div>
-  <!-- Content end --> 
   
-  <!-- Footer
-  ============================ -->
   <footer id="footer" class="section bg-dark footer-text-light">
     <div class="container">
       <p class="text-center mb-0">
@@ -2301,35 +2248,85 @@ async function withdraw(cashierId, amount, wallet) {
       </p>
     </div>
   </footer>
-  <!-- Footer end -->
   
 </div>
-<!-- Document Wrapper end --> 
 
-<!-- Back To Top --> 
 <a id="back-to-top" data-toggle="tooltip" title="Back to Top" href="javascript:void(0)"><i class="fa fa-chevron-up"></i></a> 
 
-<!-- JavaScript
-============================ -->
 <script src="scripts/assets/vendor/jquery/jquery.min.js"></script>
 <script src="scripts/assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- Highlight JS -->
 <script src="scripts/assets/vendor/highlight.js/highlight.min.js"></script>
-<!-- Easing --> 
 <script src="scripts/assets/vendor/jquery.easing/jquery.easing.min.js"></script>
-<!-- Magnific Popup --> 
 <script src="scripts/assets/vendor/magnific-popup/jquery.magnific-popup.min.js"></script>
-<!-- Custom Script -->
 <script src="scripts/assets/js/theme.js"></script>
+<script>
+$(function () {
+  var sections = [];
+  $('.idocs-content section').each(function () {
+    var id = this.id;
+    if (!id) return;
+    var $heading = $(this).find('h1, h2, h3').first();
+    if (!$heading.length) return;
+    var title = $heading.text().trim();
+    if (!title) return;
+    sections.push({ id: id, title: title.toLowerCase(), rawTitle: title });
+  });
+  function renderResult(best, score) {
+    var $result = $('#docs-search-result');
+    if (!best || score === 0) {
+      $result.html('<div class="docs-search-result docs-search-empty">Ничего не найдено</div>');
+      return;
+    }
+    var href = '#' + best.id;
+    var html = '' +
+      '<a href="' + href + '" class="docs-search-result d-block">' +
+        '<div class="docs-search-title">' + best.rawTitle + '</div>' +
+        '<div class="docs-search-meta">Перейти к разделу документации</div>' +
+      '</a>';
+    $result.html(html);
+  }
+  $('#docs-search').on('input', function () {
+    var query = $(this).val().toLowerCase().trim();
+    var $result = $('#docs-search-result');
+    if (!query) {
+      $result.empty().removeClass('has-value');
+      return;
+    }
+    $result.addClass('has-value');
+    var best = null;
+    var bestScore = 0;
+    sections.forEach(function (s) {
+      var score = 0;
+      if (s.title === query) {
+        score = 100;
+      } else if (s.title.indexOf(query) !== -1) {
+        score = 80 - s.title.indexOf(query);
+      } else {
+        var words = s.title.split(/\s+/);
+        words.forEach(function (w) {
+          if (w.indexOf(query) === 0) score = Math.max(score, 50);
+          else if (w.indexOf(query) !== -1) score = Math.max(score, 30);
+        });
+      }
+      if (score > bestScore) {
+        bestScore = score;
+        best = s;
+      }
+    });
+    renderResult(best, bestScore);
+  });
+});
+</script>
 
 
 <style>
-    /* Общие переходы */
     body, .navbar, .card, .section, pre, code, footmax-widther, .sidebar, .idocs-navigation {
         transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
     }
+    img, svg {
+        transition: background-color 0.3s ease, filter 0.3s ease, opacity 0.3s ease;
+    }
 
-    /* Базовые цвета тёмной темы */
     .dark-theme {
         background-color: #0e0e10 !important;
         color: #d4d4d4 !important;
@@ -2339,15 +2336,21 @@ async function withdraw(cashierId, amount, wallet) {
         background-color: #1a1a1c !important;
     }
 
-    .dark-theme .alert-info {
-        color: #0c5460 !important;
+    .dark-theme .alert-info,
+    .dark-theme .alert-success,
+    .dark-theme .alert-warning {
+        background-color: #1f2933 !important;
+        color: #e5e7eb !important;
+        border-color: #374151 !important;
     }
 
-    .dark-theme .alert-info a, a:focus {
-        color: #0366d6 !important;
+    .dark-theme .alert-info a,
+    .dark-theme .alert-success a,
+    .dark-theme .alert-warning a,
+    .dark-theme a:focus {
+        color: #38bdf8 !important;
     }
 
-    /* Заголовки */
     .dark-theme h1,
     .dark-theme h2,
     .dark-theme h3,
@@ -2357,7 +2360,6 @@ async function withdraw(cashierId, amount, wallet) {
         color: #e6e6e6 !important;
     }
 
-    /* Текст и параграфы */
     .dark-theme p,
     .dark-theme li,
     .dark-theme span,
@@ -2365,13 +2367,11 @@ async function withdraw(cashierId, amount, wallet) {
         color: #d4d4d4 !important;
     }
 
-    /* Общее правило для всех ссылок в тёмной теме */
     .dark-theme a {
         color: #e0e0e0 !important;
         text-decoration: underline dotted #555 !important;
     }
 
-    /* Исключения — переопределяем стиль */
     .dark-theme .accordion:not(.accordion-alternate) .card-header a.collapsed,
     .dark-theme .alert-info a,
     .dark-theme a:focus {
@@ -2384,20 +2384,99 @@ async function withdraw(cashierId, amount, wallet) {
         text-decoration: underline solid #777 !important;
     }
 
-    /* Навигация */
     .dark-theme .navbar {
         background-color: #141416 !important;
         border-bottom: 1px solid #2a2a2c !important;
     }
 
-    /* Боковая панель */
     .dark-theme .idocs-navigation,
     .dark-theme .sidebar {
         background-color: #141416 !important;
         border-right: 1px solid #2a2a2c !important;
     }
 
-    /* Карточки, контейнеры, секции */
+    .docs-search-wrapper {
+        background: #f8fafc;
+    }
+    .docs-search-wrapper .input-group-text {
+        background: transparent;
+        border-right: 0;
+        color: #6b7280;
+    }
+    .docs-search-wrapper .form-control {
+        border-left: 0;
+        box-shadow: none;
+    }
+    .docs-search-wrapper .btn {
+        border-left: 0;
+    }
+    #docs-search-result {
+        margin-top: 0.75rem;
+    }
+    .docs-search-result {
+        border-radius: 6px;
+        padding: 0.5rem 0.75rem;
+        background: #eef2ff;
+        color: #111827;
+        text-decoration: none;
+        border: 1px solid #e5e7eb;
+        transition: background-color 0.15s ease, border-color 0.15s ease, transform 0.1s ease;
+    }
+    .docs-search-result:hover {
+        background: #e0e7ff;
+        border-color: #c7d2fe;
+        text-decoration: none;
+        transform: translateY(-1px);
+    }
+    .docs-search-result.docs-search-empty {
+        background: #f9fafb;
+        color: #6b7280;
+        border-style: dashed;
+    }
+    .docs-search-title {
+        font-weight: 600;
+        font-size: 0.85rem;
+        margin-bottom: 0.1rem;
+    }
+    .docs-search-meta {
+        font-size: 0.75rem;
+        color: #6b7280;
+    }
+
+    .dark-theme .docs-search-wrapper {
+        background: #111827 !important;
+    }
+    .dark-theme .docs-search-wrapper .input-group-text {
+        color: #9ca3af !important;
+        border-color: #374151 !important;
+    }
+    .dark-theme .docs-search-wrapper .form-control {
+        background: #030712 !important;
+        border-color: #374151 !important;
+        color: #e5e7eb !important;
+    }
+    .dark-theme .docs-search-wrapper .btn {
+        border-color: #374151 !important;
+        color: #9ca3af !important;
+    }
+    .dark-theme .docs-search-result {
+        background: #020617 !important;
+        border-color: #1f2937 !important;
+        color: #e5e7eb !important;
+    }
+    .dark-theme .docs-search-result:hover {
+        background: #020617 !important;
+        border-color: #4b5563 !important;
+    }
+    .dark-theme .docs-search-result.docs-search-empty {
+        background: #020617 !important;
+        border-color: #1f2937 !important;
+        color: #6b7280 !important;
+    }
+    .dark-theme .docs-search-meta {
+        color: #6b7280 !important;
+    }
+
     .dark-theme .card,
     .dark-theme .section,
     .dark-theme .content,
@@ -2408,15 +2487,25 @@ async function withdraw(cashierId, amount, wallet) {
         border-color: #2a2a2c !important;
     }
 
-    /* Прелоадер, хедер, футер */
-    .dark-theme header,
-    .dark-theme footer {
-        background-color: #141416 !important;
-        color: #b5b5b5 !important;
-        border-color: #2a2a2c !important;
+    .dark-theme .badge-success,
+    .dark-theme .badge-info,
+    .dark-theme .badge-danger,
+    .dark-theme .badge-warning {
+        background-color: #22c55e !important;
+        color: #051016 !important;
     }
 
-    /* Кнопки */
+    body:not(.dark-theme) #footer {
+        background-color: #f9fafb !important;
+        color: #111827 !important;
+        border-top: 1px solid rgba(15, 23, 42, 0.1) !important;
+    }
+    .dark-theme #footer {
+        background-color: #111827 !important;
+        color: #e5e7eb !important;
+        border-top: 1px solid #1f2937 !important;
+    }
+
     .dark-theme .btn {
         background-color: #1f1f21 !important;
         color: #d4d4d4 !important;
@@ -2426,7 +2515,6 @@ async function withdraw(cashierId, amount, wallet) {
         background-color: #2a2a2c !important;
     }
 
-    /* ====== Dark Theme Code Highlighting ====== */
     .dark-theme pre,
     .dark-theme code {
         background-color: #1e1e1e !important; /* мягкий фон */
@@ -2435,7 +2523,6 @@ async function withdraw(cashierId, amount, wallet) {
         border-radius: 6px;
     }
 
-    /* Цвета синтаксиса — стиль в духе VSCode One Dark */
     .dark-theme .hljs-keyword,
     .dark-theme .hljs-selector-tag,
     .dark-theme .hljs-literal,
@@ -2484,7 +2571,6 @@ async function withdraw(cashierId, amount, wallet) {
         color: #569cd6 !important; /* синий */
     }
 
-    /* Таблицы */
     .dark-theme table {
         background-color: #1a1a1c !important;
         color: #d4d4d4 !important;
@@ -2493,14 +2579,12 @@ async function withdraw(cashierId, amount, wallet) {
         border-color: #2a2a2c !important;
     }
 
-    /* Маркировки, выделения */
     .dark-theme mark,
     .dark-theme .highlight {
         background-color: #2a2a2c !important;
         color: #f0f0f0 !important;
     }
 
-    /* Scrollbar */
     .dark-theme ::-webkit-scrollbar {
         width: 10px;
     }
@@ -2512,7 +2596,6 @@ async function withdraw(cashierId, amount, wallet) {
         background-color: #3a3a3c;
     }
 
-    /* Исправление горизонтального скролла */
     body {
         overflow-x: hidden;
     }
@@ -2538,7 +2621,6 @@ async function withdraw(cashierId, amount, wallet) {
         -webkit-overflow-scrolling: touch;
     }
 
-    /* Формы и инпуты */
     .dark-theme input,
     .dark-theme textarea,
     .dark-theme select {
@@ -2554,13 +2636,11 @@ async function withdraw(cashierId, amount, wallet) {
         outline: none;
     }
 
-    /* Тени (приглушённые) */
     .dark-theme .shadow,
     .dark-theme .card {
         box-shadow: none !important;
     }
 
-    /* Акценты — просто ярче текста */
     .dark-theme em,
     .dark-theme strong {
         color: #eaeaea !important;

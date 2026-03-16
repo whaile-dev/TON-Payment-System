@@ -2224,3 +2224,20 @@ body {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(0, 136, 204, 0.5);
 }
+
+[data-bs-theme="dark"] .bg-light,
+[data-bs-theme="dark"] .alert-light {
+    background-color: #1f2933 !important;
+    color: #f9fafb !important;
+}
+
+[data-bs-theme="dark"] .bg-light a,
+[data-bs-theme="dark"] .alert-light a {
+    color: #38bdf8 !important;
+}
+
+[data-bs-theme="dark"] .bg-light .badge,
+[data-bs-theme="dark"] .alert-light .badge {
+    background-color: #22c55e !important;
+    color: #051016 !important;
+}
